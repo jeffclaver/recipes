@@ -1,9 +1,14 @@
-Para rodar o backend, os scripts do banco de dados é:
+CREATE DATABASE foods;
+USE foods;
 
-CREATE DATABASE recipes
-
-CREATE TABLE receitas (
+CREATE TABLE recipes (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    titulo VARCHAR(255) NOT NULL,
-    texto_receita TEXT NOT NULL
+    title VARCHAR(70),
+    prepTime INT,
+    difficulty VARCHAR(20),
+    serving INT,
+    introPlate TEXT,
+    ingredients TEXT,
+    steps TEXT,
+    imagePath VARCHAR(255)
 );
