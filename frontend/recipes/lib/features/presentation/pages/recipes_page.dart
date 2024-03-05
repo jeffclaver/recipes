@@ -11,18 +11,22 @@ class RecipePage extends StatefulWidget {
 }
 
 class _RecipePageState extends State<RecipePage> {
-  final bloc = di<RecipesBloc>();
-  final controllerTitle = TextEditingController();
-  final controllerText = TextEditingController();
+  late final RecipesBloc bloc;
+  late TextEditingController controllerTitle;
+  late TextEditingController controllerText;
 
   @override
   void initState() {
     super.initState();
+    bloc = di<RecipesBloc>();
+    controllerTitle = TextEditingController();
+    controllerText = TextEditingController();
     bloc.add(FetchRecipeEvent());
   }
 
   @override
   void dispose() {
+    bloc.close();
     controllerTitle.dispose();
     controllerText.dispose();
     super.dispose();
@@ -41,20 +45,88 @@ class _RecipePageState extends State<RecipePage> {
               child: SafeArea(
                 child: Column(
                   children: [
-                    ...list.map((e) => Card(
+                    ...list.map(
+                      (recipe) => GestureDetector(
+                        onTap: () {
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: Text(recipe.titulo),
+                                content: Text(recipe.textoReceita),
+                                actions: <Widget>[
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                    child: const Text('Fechar'),
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        },
+                        child: Card(
+                          margin: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 16),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                e.titulo,
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(15.0),
+                                child: Image.network(
+                                  "http://via.placeholder.com/350x280",
+                                  fit: BoxFit.cover,
+                                  width: double.infinity,
                                 ),
                               ),
-                              Text(e.textoReceita),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 8, vertical: 15),
+                                child: Text(
+                                  recipe.titulo,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 24.0,
+                                  ),
+                                ),
+                              ),
+                              const Padding(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 8, vertical: 4),
+                                child: Row(
+                                  children: [
+                                    CircleAvatar(),
+                                    SizedBox(width: 8),
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          "Troxs",
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        Row(
+                                          children: [
+                                            Icon(Icons.favorite, size: 16),
+                                            SizedBox(width: 8),
+                                            Text("130"),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                    Spacer(),
+                                    Icon(Icons.favorite_outline),
+                                  ],
+                                ),
+                              ),
                             ],
                           ),
-                        ))
+                        ),
+                      ),
+                    )
                   ],
                 ),
               ),
@@ -103,6 +175,9 @@ class _RecipePageState extends State<RecipePage> {
                     decoration: const InputDecoration(
                       hintText: 'Ingredientes',
                     ),
+                    keyboardType: TextInputType.multiline,
+                    maxLines: null,
+                    textInputAction: TextInputAction.newline,
                   ),
                   const SizedBox(height: 20),
                   ElevatedButton(
