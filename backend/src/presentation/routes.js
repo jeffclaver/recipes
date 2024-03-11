@@ -8,7 +8,7 @@ const RecipeRepository = require('../infrastructure/recipeRepository');
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, 'D:/estudos/backend/uploads/');
+        cb(null, 'D:/estudos/frontend/recipes/assets/uploads/');
     },
     filename: function (req, file, cb) {
         cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));

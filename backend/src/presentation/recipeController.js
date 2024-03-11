@@ -11,7 +11,7 @@ class RecipeController {
         try {
             const { title, prepTime, difficulty, serving, introPlate, ingredients, steps } = req.body;
             upload.single('imagePath')(req, res, async () => {
-                const imagePath = req.file ? req.file.path : null;
+                const imagePath = req.file ? req.file.filename : null;
                 const recipeData = {
                     title,
                     prepTime,
@@ -20,7 +20,7 @@ class RecipeController {
                     introPlate,
                     ingredients,
                     steps,
-                    imagePath
+                    imagePath: imagePath
                 };
                 const newRecipeId = await this.usecase.create(recipeData);
 
